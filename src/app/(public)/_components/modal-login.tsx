@@ -81,7 +81,7 @@ export function ModalLogin({ initalValues }: ModalLoginProps) {
                       aria-required="true"
                     />
                   </FormControl>
-                  <FormDescription>Seu senha é necessário para acessar sua conta</FormDescription>
+                  <FormDescription>Sua senha é necessário para acessar sua conta</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

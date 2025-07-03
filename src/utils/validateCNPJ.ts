@@ -39,3 +39,5 @@ export function validateCNPJ(cnpj: string): boolean {
 
   return result === parseInt(digits.charAt(1));
 }
+
+
