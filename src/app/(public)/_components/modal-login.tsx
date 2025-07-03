@@ -10,7 +10,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -22,32 +21,43 @@ import { FormLoginData, useFormLogin } from "./use-form-login";
 import { InputPassword } from "@/components/ui/input-password";
 
 interface ModalLoginProps {
-  initalValues?: {
-    login: string;
-    password: string;
-  }
+  initialValues?: Partial<FormLoginData>;
+  onSubmit?: (data: FormLoginData) => void | Promise<void>;
+  onRegisterClick?: () => void;
+  onForgotPasswordClick?: () => void;
+  isLoading?: boolean;
 }
 
-export function ModalLogin({ initalValues }: ModalLoginProps) {
-
-  const form = useFormLogin({ initalValues });
+export function ModalLogin({
+  initialValues,
+  onSubmit: onSubmitProp,
+  onRegisterClick,
+  onForgotPasswordClick,
+  isLoading = false
+}: ModalLoginProps) {
+  const form = useFormLogin({ initialValues });
 
   async function onSubmit(formData: FormLoginData) {
-    console.log(formData);
-
+    if (onSubmitProp) {
+      await onSubmitProp(formData);
+    } else {
+      console.log(formData);
+    }
   }
 
-
-
   return (
-    <Card className="max-w-125 w-full">
-      <CardHeader>
+    <Card className="max-w-md w-full">
+      <CardHeader className="text-center">
         <CardTitle>Entre na sua conta</CardTitle>
-        <CardDescription>Digite seu e-mail abaixo para acessar sua conta</CardDescription>
+        <CardDescription>
+          Digite suas credenciais para acessar sua conta
+        </CardDescription>
       </CardHeader>
+
       <CardContent>
         <Form {...form}>
           <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+            {/* Campo de Login */}
             <FormField
               control={form.control}
               name="login"
@@ -57,43 +67,79 @@ export function ModalLogin({ initalValues }: ModalLoginProps) {
                   <FormControl>
                     <Input
                       {...field}
+                      type="email"
                       placeholder="Digite seu e-mail"
-                      aria-describedby="group-name-error"
-                      aria-required="true"
+                      disabled={isLoading}
+                      autoComplete="username"
                     />
                   </FormControl>
-                  <FormDescription>Seu e-mail é necessário para acessar sua conta</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            {/* Campo de Senha */}
             <FormField
               control={form.control}
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Senha</FormLabel>
+                  <FormLabel className="flex items-center justify-between">
+                    <span>Senha</span>
+                    {onForgotPasswordClick && (
+                      <Button
+                        type="button"
+                        variant="link"
+                        className="h-auto p-0 text-sm text-muted-foreground hover:text-primary"
+                        onClick={onForgotPasswordClick}
+                        disabled={isLoading}
+                      >
+                        Esqueceu a senha?
+                      </Button>
+                    )}
+                  </FormLabel>
                   <FormControl>
                     <InputPassword
                       {...field}
                       placeholder="Digite sua senha"
-                      aria-describedby="group-name-error"
-                      aria-required="true"
+                      disabled={isLoading}
+                      autoComplete="current-password"
                     />
                   </FormControl>
-                  <FormDescription>Sua senha é necessário para acessar sua conta</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">Entrar</Button>
+
+            {/* Botão de Login */}
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isLoading}
+            >
+              {isLoading ? "Entrando..." : "Entrar"}
+            </Button>
           </form>
         </Form>
       </CardContent>
-      <CardFooter>
-        Não tem uma conta?
-        <Button variant={"link"} className="underline cursor-pointer">Cadastre-se</Button>
-      </CardFooter>
+
+      {/* Footer com link para cadastro */}
+      {onRegisterClick && (
+        <CardFooter className="flex flex-col space-y-2">
+          <div className="flex items-center justify-center space-x-1 text-sm text-muted-foreground">
+            <span>Não tem uma conta?</span>
+            <Button
+              type="button"
+              variant="link"
+              className="cursor-pointer h-auto p-0"
+              onClick={onRegisterClick}
+              disabled={isLoading}
+            >
+              Cadastre-se
+            </Button>
+          </div>
+        </CardFooter>
+      )}
     </Card>
   )
 }

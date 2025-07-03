@@ -3,6 +3,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -33,12 +34,14 @@ interface ModalRegisterProps {
   initialValues?: Partial<FormRegisterData>;
   onSubmit?: (data: FormRegisterData) => void | Promise<void>;
   isLoading?: boolean;
+  onRegisterClick?: () => void;
 }
 
 export function ModalRegister({
   initialValues,
   onSubmit: onSubmitProp,
-  isLoading = false
+  isLoading = false,
+  onRegisterClick
 }: ModalRegisterProps) {
   const form = useFormRegister({ initialValues });
 
@@ -285,6 +288,22 @@ export function ModalRegister({
           </form>
         </Form>
       </CardContent>
+      {onRegisterClick && (
+        <CardFooter className="flex flex-col space-y-2">
+          <div className="flex items-center justify-center space-x-1 text-sm text-muted-foreground">
+            <span>Já tem uma conta?</span>
+            <Button
+              onClick={onRegisterClick}
+              disabled={isLoading}
+              type="button"
+              variant="link"
+              className="cursor-pointer h-auto p-0"
+            >
+              Conecte-se
+            </Button>
+          </div>
+        </CardFooter>
+      )}
     </Card>
   )
 }
