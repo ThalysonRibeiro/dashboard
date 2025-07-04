@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { FormLoginData, useFormLogin } from "./use-form-login";
+import { FormLoginData, useFormLogin } from "../hooks/use-form-login";
 import { InputPassword } from "@/components/ui/input-password";
 
 interface ModalLoginProps {

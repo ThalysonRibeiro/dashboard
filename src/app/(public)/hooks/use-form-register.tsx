@@ -15,6 +15,7 @@ const passwordSchema = z
 
 // Enum para gênero (mais type-safe)
 const genderEnum = z.enum(['masculino', 'feminino', 'outro', 'prefiro_nao_dizer']);
+const accountType = z.enum(['userdefault', 'usermoderator', 'useradmin']);
 
 // Schema do formulário
 const formSchema = z.object({
@@ -64,6 +65,8 @@ const formSchema = z.object({
     .min(1, "A senha de administrador é obrigatória")
     .min(6, "A senha de administrador deve ter pelo menos 6 caracteres"),
 
+  type: accountType,
+
   password: passwordSchema,
 
   confirmPassword: z.string()
@@ -96,6 +99,7 @@ export function useFormRegister({ initialValues }: UseFormRegisterProps = {}) {
       password: "",
       confirmPassword: "",
       adminPassword: "",
+      type: "userdefault", // Valor padrão para o tipo de conta
       ...initialValues, // Sobrescreve os valores padrão com os iniciais fornecidos
     },
   });
@@ -118,4 +122,10 @@ export const GENDER_OPTIONS = [
   { value: 'feminino', label: 'Feminino' },
   { value: 'outro', label: 'Outro' },
   { value: 'prefiro_nao_dizer', label: 'Prefiro não dizer' },
+] as const;
+
+export const ACCOUNT_TYPE_OPTIONS = [
+  { value: 'userdefault', label: 'Usuário' },
+  { value: 'usermoderator', label: 'Moderador' },
+  { value: 'useradmin', label: 'Administrador' },
 ] as const;
