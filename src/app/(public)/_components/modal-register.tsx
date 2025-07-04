@@ -26,7 +26,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { InputPassword } from "@/components/ui/input-password";
-import { FormRegisterData, useFormRegister, GENDER_OPTIONS } from "./use-form-register";
+import { FormRegisterData, useFormRegister, GENDER_OPTIONS, ACCOUNT_TYPE_OPTIONS } from "../hooks/use-form-register";
 import { formatCNPJ } from "@/utils/formatCNPJ";
 import { formatPhone } from "@/utils/formatPhone";
 
@@ -254,7 +254,7 @@ export function ModalRegister({
               />
 
               {/* Senha de administrador - span full width */}
-              <div className="md:col-span-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 col-span-full">
                 <FormField
                   control={form.control}
                   name="adminPassword"
@@ -270,6 +270,37 @@ export function ModalRegister({
                       </FormControl>
                       <FormDescription>
                         Senha necessária para criar contas de administrador
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* Account Type */}
+                <FormField
+                  control={form.control}
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tipo de conta</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          disabled={isLoading}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Selecione seu gênero" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {ACCOUNT_TYPE_OPTIONS.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormDescription>
+                        Selecione o tipo de conta que deseja criar
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
