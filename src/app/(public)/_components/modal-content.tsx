@@ -4,47 +4,107 @@ import { useState } from "react"
 import { ModalLogin } from "./modal-login"
 import { ModalRegister } from "./modal-register"
 import { FormRegisterData } from "../hooks/use-form-register";
-import api from "@/lib/axios";
+import { FormLoginData } from "../hooks/use-form-login";
+import { loginServerAction } from "../_action/auth";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { registerServerAction } from "../_action/register";
+import { FormForgotPasswordData } from "../hooks/use-form-forgot-password";
+import { forgotPasswordServerAction } from "../_action/forgot-password";
+
 
 export function ModalContent() {
+  const router = useRouter()
   const [loginOrRegister, setLoginOrRegister] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-  async function handleLoginOrRegister(data: FormRegisterData) {
-    setLoginOrRegister(!loginOrRegister);
+  async function handleRegister(data: FormRegisterData) {
+    setIsLoading(true);
 
     try {
-      const response = await api.post("/auth/register-admin", {
-        name: data.name,
-        email: data.email,
-        cpf_or_cnpj: data.cnpj,
-        gender: data.gender,
-        dateOfBirth: data.dateOfBirth,
-        phone: data.phone,
-        password: data.password,
-        // confirmPassword: data.confirmPassword,
-        type: data.type,
-        adminPassword: data.adminPassword,
-      });
-
-      if (response.status === 201) {
-        console.log("User registered successfully");
-        // You can redirect or show a success message here
-      } else {
-        console.error("Failed to register user");
+      const response = await registerServerAction(data);
+      if (!response.success) {
+        toast.error(response.error || 'Erro ao registrar');
+        setLoginOrRegister(false);
+        return;
       }
-    } catch (error) {
-      console.log(error);
-
+      toast.success(response.message || 'Registro realizado com sucesso!');
+      setLoginOrRegister(!loginOrRegister);
+    } catch {
+      toast.error('Erro inesperado. Tente novamente.');
+    } finally {
+      setIsLoading(false);
     }
 
   }
 
+  async function handleLogin(data: FormLoginData) {
+    if (isLoading) return;
+
+    setIsLoading(true);
+
+    try {
+      const result = await loginServerAction(data);
+
+      if (!result.success) {
+        setError(result.error || 'Erro ao fazer login');
+        toast.error(result.error || 'Erro ao fazer login');
+        return;
+      }
+      setError(null);
+
+
+      toast.success(result.message || 'Login realizado com sucesso!');
+      router.push("/admin");
+
+    } catch {
+      toast.error('Erro inesperado. Tente novamente.');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleForgotPassword(data: FormForgotPasswordData) {
+    if (isLoading) return;
+
+    setIsLoading(true);
+
+    try {
+      const result = await forgotPasswordServerAction(data);
+
+      if (!result.success) {
+        setError(result.error || 'Erro ao enviar link de recuperação');
+        toast.error(result.error || 'Erro ao enviar link de recuperação');
+        return;
+      }
+      setError(null);
+
+      toast.success(result.message || 'Link de recuperação enviado com sucesso!');
+    } catch {
+      toast.error('Erro inesperado. Tente novamente.');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+
   return (
     <section className="container mx-auto min-h-[calc(100vh-4rem)] flex w-full items-center justify-center">
       {loginOrRegister ? (
-        <ModalLogin onRegisterClick={() => setLoginOrRegister(false)} onForgotPasswordClick={() => setLoginOrRegister(true)} />
+        <ModalLogin
+          onRegisterClick={() => setLoginOrRegister(false)}
+          onSubmit={handleLogin}
+          onForgotPasswordSubmit={handleForgotPassword}
+          isLoading={isLoading}
+          error={error}
+        />
       ) : (
-        <ModalRegister onRegisterClick={() => setLoginOrRegister(true)} onSubmit={(data) => handleLoginOrRegister(data)} />
+        <ModalRegister
+          onRegisterClick={() => setLoginOrRegister(true)}
+          onSubmit={(data) => handleRegister(data)}
+          isLoading={isLoading}
+        />
       )}
     </section>
   )

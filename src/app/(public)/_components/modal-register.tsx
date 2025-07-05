@@ -49,7 +49,6 @@ export function ModalRegister({
     if (onSubmitProp) {
       await onSubmitProp(formData);
     } else {
-      console.log(formData);
       form.reset();
     }
   }
@@ -311,7 +310,7 @@ export function ModalRegister({
 
             <Button
               type="submit"
-              className="w-full"
+              className="w-full cursor-pointer"
               disabled={isLoading}
             >
               {isLoading ? "Criando conta..." : "Criar conta"}
