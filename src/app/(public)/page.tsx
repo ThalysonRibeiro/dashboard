@@ -1,11 +1,11 @@
 import { ModeToggleTheme } from "@/components/ModeToggleTheme";
-import { ModalContent } from "./_components/modal-content";
+import { AuthContent } from "./_components/auth-content";
 
 export default function Home() {
   return (
     <main className="p-6">
       <ModeToggleTheme />
-      <ModalContent />
+      <AuthContent />
 
     </main>
   );

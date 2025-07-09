@@ -1,30 +1,38 @@
-'use server'
+'use server';
 
-import serverApi from '@/lib/serverApi'
 import { AxiosError } from 'axios';
+import serverApi from '@/lib/serverApi';
 
-export async function resetPasswordServerAction({ token, newPassword }: { newPassword: string, token: string }) {
+export async function resetPasswordServerAction({
+  token,
+  newPassword,
+}: {
+  newPassword: string;
+  token: string;
+}) {
   try {
-    const response = await serverApi.post('/auth/reset-password', { token, newPassword });
+    const response = await serverApi.post('/auth/reset-password', {
+      token,
+      newPassword,
+    });
 
     return {
       success: true,
-      message: response.data.message || 'Senha redefinida com sucesso'
+      message: response.data.message || 'Senha redefinida com sucesso',
     };
-
   } catch (error) {
     if (error instanceof AxiosError) {
       const errorMessage = error.response?.data?.message || 'Erro desconhecido';
 
       return {
         success: false,
-        error: errorMessage
+        error: errorMessage,
       };
     }
 
     return {
       success: false,
-      error: 'Erro interno do servidor'
+      error: 'Erro interno do servidor',
     };
   }
 }

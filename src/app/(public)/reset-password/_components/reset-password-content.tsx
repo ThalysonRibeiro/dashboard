@@ -1,13 +1,11 @@
-"use client"
+'use client';
 
-import { useState } from "react";
-import { FormResetPassword } from "./form-reset-password";
-import { FormResetPasswordData } from "../hooks/use-form-reset-password";
-import { resetPasswordServerAction } from "../_action/reset-password";
-import { toast } from "react-toastify";
-import { useSearchParams } from "next/navigation";
-
-
+import { useSearchParams } from 'next/navigation';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
+import { resetPasswordServerAction } from '../_action/reset-password';
+import type { FormResetPasswordData } from '../hooks/use-form-reset-password';
+import { FormResetPassword } from './form-reset-password';
 
 export function ResetPasswordContent() {
   const searchParams = useSearchParams();
@@ -25,7 +23,7 @@ export function ResetPasswordContent() {
     try {
       const response = await resetPasswordServerAction({
         token,
-        newPassword: data.newPassword
+        newPassword: data.newPassword,
       });
 
       if (!response.success) {
@@ -37,7 +35,6 @@ export function ResetPasswordContent() {
 
       // Opcional: redirecionar para login após sucesso
       // router.push('/login');
-
     } catch {
       toast.error('Erro inesperado ao redefinir senha');
     } finally {
@@ -46,11 +43,8 @@ export function ResetPasswordContent() {
   }
 
   return (
-    <section className="w-full flex flex-col items-center justify-center">
-      <FormResetPassword
-        onSubmit={handleSubmit}
-        isLoading={isLoading}
-      />
+    <section className='flex w-full flex-col items-center justify-center'>
+      <FormResetPassword isLoading={isLoading} onSubmit={handleSubmit} />
     </section>
   );
 }
