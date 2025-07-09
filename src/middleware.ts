@@ -25,44 +25,65 @@ interface UserValidationResponse {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith('/_next') || pathname === '/') {
+  if (pathname.startsWith('/_next')) {
+    return NextResponse.next();
+  }
+
+  // Verificar se está na rota raiz e tem sessão válida
+  if (pathname === '/') {
+    const accessToken = await getCookieServer();
+
+    if (accessToken) {
+      const validationResult = await validateAccessToken(accessToken);
+
+      if (validationResult.isValid) {
+        // Se tem sessão válida, redireciona para /admin
+        return NextResponse.redirect(new URL('/admin', request.url));
+      }
+    }
+
+    // Se não tem sessão válida, permite acesso à página inicial
     return NextResponse.next();
   }
 
   if (pathname.startsWith('/admin')) {
-    const accessToken = await getCookieServer();
-
-    if (!accessToken) {
-      return NextResponse.redirect(new URL('/', request.url));
-    }
-
-    const validationResult = await validateAccessToken(accessToken);
-
-    if (!validationResult.isValid) {
-      return NextResponse.redirect(new URL('/', request.url));
-    }
-
-    // Verificar se o email está verificado
-    if (!validationResult.user?.emailVerified) {
-      return NextResponse.redirect(new URL('/verify-email', request.url));
-    }
-
-    // Adicionar headers com informações completas do usuário
-    const response = NextResponse.next();
-    response.headers.set('x-user-id', validationResult.user?.id || '');
-    response.headers.set('x-user-name', validationResult.user?.name || '');
-    response.headers.set('x-user-email', validationResult.user?.email || '');
-    response.headers.set('x-user-type', validationResult.user?.type || '');
-    response.headers.set('x-user-avatar', validationResult.user?.avatar || '');
-    response.headers.set(
-      'x-user-email-verified',
-      validationResult.user?.emailVerified || ''
-    );
-
-    return response;
+    return handleAdminRoute(request);
   }
 
   return NextResponse.next();
+}
+
+async function handleAdminRoute(request: NextRequest) {
+  const accessToken = await getCookieServer();
+
+  if (!accessToken) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+
+  const validationResult = await validateAccessToken(accessToken);
+
+  if (!validationResult.isValid) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+
+  // Verificar se o email está verificado
+  if (!validationResult.user?.emailVerified) {
+    return NextResponse.redirect(new URL('/verify-email', request.url));
+  }
+
+  // Adicionar headers com informações completas do usuário
+  const response = NextResponse.next();
+  response.headers.set('x-user-id', validationResult.user?.id || '');
+  response.headers.set('x-user-name', validationResult.user?.name || '');
+  response.headers.set('x-user-email', validationResult.user?.email || '');
+  response.headers.set('x-user-type', validationResult.user?.type || '');
+  response.headers.set('x-user-avatar', validationResult.user?.avatar || '');
+  response.headers.set(
+    'x-user-email-verified',
+    validationResult.user?.emailVerified || ''
+  );
+
+  return response;
 }
 
 async function validateAccessToken(token: string) {
@@ -97,12 +118,3 @@ async function validateAccessToken(token: string) {
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)'],
 };
-
-// // Exemplo para diferentes níveis de acesso
-// if (pathname.startsWith("/admin")) {
-//   // Apenas admin e moderador
-// } else if (pathname.startsWith("/moderator")) {
-//   // Apenas moderador e admin
-// } else if (pathname.startsWith("/user")) {
-//   // Qualquer usuário logado
-// }
