@@ -1,6 +1,7 @@
 'use client';
 
 import { Bell, List } from 'lucide-react';
+import { ModeToggleTheme } from '@/components/ModeToggleTheme';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
@@ -58,9 +59,7 @@ export function Header({
           >
             <SheetTitle>
               <div className="mb-2 flex items-center rounded-lg px-5">
-                <p className='font-montserrat uppercase'>
-                  Menu de Navegação
-                </p>
+                <p className="font-montserrat uppercase">Menu de Navegação</p>
               </div>
             </SheetTitle>
 
@@ -91,6 +90,7 @@ export function Header({
         <div>
           <Bell />
         </div>
+        <ModeToggleTheme />
       </div>
     </header>
   );

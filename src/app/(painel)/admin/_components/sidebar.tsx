@@ -20,6 +20,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { logout } from '@/app/(public)/_action/auth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible';
 import {
@@ -149,8 +150,8 @@ export function SidebarLinks({
       className={clsx(
         'flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors duration-200',
         {
-          'bg-accent text-white': isActive,
-          'hover:bg-accent hover:text-white': !isActive,
+          'bg-accent text-foreground': isActive,
+          'hover:bg-accent': !isActive,
         }
       )}
       href={href}
@@ -273,6 +274,11 @@ export function SidebarFooter({
     await logout();
   }
 
+  const USERTYPES: { [key: string]: string } = {
+    useradmin: 'Admin',
+    usermoderator: 'Moderador',
+  }
+
   return (
     <div
       className={clsx('flex flex-col rounded-lg p-1 px-4 pt-4', {
@@ -285,15 +291,15 @@ export function SidebarFooter({
           <div className="flex h-full items-center gap-2">
             <Avatar>
               <AvatarImage alt="Avatar" src={user?.avatar} />
-              <AvatarFallback>AD</AvatarFallback>
+              <AvatarFallback>{user.name[0]}</AvatarFallback>
             </Avatar>
             {!isCollapsed && (
               <div className="flex w-full flex-col items-start">
                 <span
-                  className="line-clamp-1 font-medium text-[12px]"
+                  className='line-clamp-1 flex w-full items-center justify-between font-medium text-[12px]'
                   title={user.name}
                 >
-                  {user.name}
+                  {user.name} <Badge>{USERTYPES[user.type]}</Badge>
                 </span>
                 <span className="text-[12px] text-gray-600" title={user.email}>
                   {user.email}
