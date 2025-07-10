@@ -120,7 +120,7 @@ export function Sidebar({
             setIsCollapsed={setIsCollapsed}
             user={user}
           />
-          <div className="flex-1 px-2 py-4 md:p-4">{children}</div>
+          <div className="container mx-auto p-4">{children}</div>
         </main>
       </div>
     </div>
