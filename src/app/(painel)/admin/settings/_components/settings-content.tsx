@@ -1,4 +1,13 @@
 'use client';
+import {
+  Bell,
+  Building,
+  CreditCard,
+  Mail,
+  ShieldCheck,
+  User,
+  Users,
+} from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Account } from './account';
 import { Billing } from './billing';
@@ -31,7 +40,7 @@ export function SettingsContent() {
             role="tab"
             value="account"
           >
-            Conta
+            Conta <User />
           </TabsTrigger>
 
           <TabsTrigger
@@ -40,7 +49,7 @@ export function SettingsContent() {
             role="tab"
             value="business"
           >
-            Negócios
+            Negócios <Building />
           </TabsTrigger>
 
           <TabsTrigger
@@ -49,7 +58,7 @@ export function SettingsContent() {
             role="tab"
             value="billing"
           >
-            Cobrança
+            Cobrança <CreditCard />
           </TabsTrigger>
 
           <TabsTrigger
@@ -58,7 +67,7 @@ export function SettingsContent() {
             role="tab"
             value="notification"
           >
-            Notificações
+            Notificações <Bell />
           </TabsTrigger>
 
           <TabsTrigger
@@ -67,7 +76,7 @@ export function SettingsContent() {
             role="tab"
             value="security"
           >
-            Segurança
+            Segurança <ShieldCheck />
           </TabsTrigger>
 
           <TabsTrigger
@@ -76,7 +85,7 @@ export function SettingsContent() {
             role="tab"
             value="team"
           >
-            Equipe
+            Equipe <Users />
           </TabsTrigger>
 
           <TabsTrigger
@@ -85,7 +94,7 @@ export function SettingsContent() {
             role="tab"
             value="e-mails"
           >
-            E-mails
+            E-mails <Mail />
           </TabsTrigger>
         </TabsList>
 
