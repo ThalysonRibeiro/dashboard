@@ -14,6 +14,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { NavigationItemsMap, SidebarFooter } from './sidebar';
+import { usePathname } from 'next/navigation';
 
 interface HeaderProps {
   isCollapsed: boolean;
@@ -34,6 +35,25 @@ export function Header({
   user,
   isCollapsed,
 }: HeaderProps) {
+  const pathnameUrl = usePathname();
+
+  const TYPE_TITLE_URL = {
+    "undefined": "Dashboard",
+    "orders": "Pedidos",
+    "products": "Produtos",
+    "customers": "Usuários",
+    "analytics": "Relatórios",
+    "categories": "Categorias",
+    "inventory": "Inventário",
+    "shipping": "Entregas",
+    "transactions": "Transações",
+    "settings": "Configurações",
+  } as const;
+
+  type TypeTitleUrlKey = keyof typeof TYPE_TITLE_URL;
+
+  const key = pathnameUrl.split("/")[2] as TypeTitleUrlKey;
+
   return (
     <header className="flex h-16 w-full items-center justify-between gap-4 border-b px-4">
       <div className="md:hidden">
@@ -84,7 +104,9 @@ export function Header({
           </SheetContent>
         </Sheet>
       </div>
-      <h2 className="hidden font-semibold text-2xl md:block">Dashboard</h2>
+      <h2 className="hidden font-semibold text-2xl md:block">
+        {TYPE_TITLE_URL[key]}
+      </h2>
       <div className="flex max-w-100 flex-1 items-center gap-4">
         <Input placeholder="Pesquisar" />
         <div>
