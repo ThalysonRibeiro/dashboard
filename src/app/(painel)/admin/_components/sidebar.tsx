@@ -4,6 +4,7 @@ import {
   BarChart3,
   ChevronLeft,
   ChevronRight,
+  ChevronsUpDown,
   ChevronUp,
   CircleDollarSign,
   LayoutDashboard,
@@ -32,16 +33,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
+import { useAppContext } from '@/context/app-context';
+import type { ProfileType } from '@/types/user-type';
 import { Header } from './header';
 
-export function Sidebar({
-  children,
-  user,
-}: {
-  children: React.ReactNode;
-  user: UserProps;
-}) {
-  // const router = useRouter();
+export function Sidebar({ children }: { children: React.ReactNode }) {
+  const { userData } = useAppContext();
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
@@ -102,7 +99,7 @@ export function Sidebar({
         {/* sidebar footer */}
         <div>
           <Separator />
-          <SidebarFooter isCollapsed={isCollapsed} user={user} />
+          <SidebarFooter isCollapsed={isCollapsed} user={userData} />
         </div>
       </aside>
 
@@ -118,7 +115,7 @@ export function Sidebar({
             isCollapsed={isCollapsed}
             pathname={pathname}
             setIsCollapsed={setIsCollapsed}
-            user={user}
+            user={userData}
           />
           <div className="container mx-auto p-4">{children}</div>
         </main>
@@ -252,17 +249,9 @@ export function NavigationItemsMap({
 }
 
 interface SideBarFooterProps {
-  user: UserProps;
+  user: ProfileType | null;
   isCollapsed: boolean;
   isLoggingOut?: boolean;
-}
-
-interface UserProps {
-  id: string;
-  name: string;
-  email: string;
-  type: string;
-  avatar?: string;
 }
 
 export function SidebarFooter({
@@ -270,6 +259,10 @@ export function SidebarFooter({
   isCollapsed,
   isLoggingOut,
 }: SideBarFooterProps) {
+  if (!user) {
+    return null;
+  }
+
   async function handleLogout() {
     await logout();
   }
@@ -277,7 +270,7 @@ export function SidebarFooter({
   const USERTYPES: { [key: string]: string } = {
     useradmin: 'Admin',
     usermoderator: 'Moderador',
-  }
+  };
 
   return (
     <div
@@ -296,10 +289,10 @@ export function SidebarFooter({
             {!isCollapsed && (
               <div className="flex w-full flex-col items-start">
                 <span
-                  className='line-clamp-1 flex w-full items-center justify-between font-medium text-[12px]'
+                  className="line-clamp-1 flex w-full items-center justify-between font-medium text-[12px]"
                   title={user.name}
                 >
-                  {user.name} <Badge>{USERTYPES[user.type]}</Badge>
+                  {user.name.split(' ')[0]}.{user.name.split(' ')[1].slice(0, 1)} <Badge>{USERTYPES[user.type]}</Badge>
                 </span>
                 <span className="text-[12px] text-gray-600" title={user.email}>
                   {user.email}
@@ -311,6 +304,7 @@ export function SidebarFooter({
                 Usuário: {user.name}, Email: {user.email}
               </div>
             )}
+            <ChevronsUpDown />
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent>

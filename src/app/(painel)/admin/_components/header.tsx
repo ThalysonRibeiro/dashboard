@@ -14,19 +14,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import type { ProfileType } from '@/types/user-type';
 import { NavigationItemsMap, SidebarFooter } from './sidebar';
 
 interface HeaderProps {
   isCollapsed: boolean;
   setIsCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
   pathname: string;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    type: string;
-    avatar?: string;
-  };
+  user: ProfileType | null;
 }
 
 export function Header({
